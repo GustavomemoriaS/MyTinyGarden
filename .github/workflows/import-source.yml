@@ -1,0 +1,28 @@
+name: Import GardenQuest source
+
+on:
+  push:
+    paths:
+      - "_source/GardenQuest-source.zip"
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract source archive
+        run: |
+          unzip -o _source/GardenQuest-source.zip
+          rm -f _source/GardenQuest-source.zip
+          rm -rf _source
+          rm -f .github/workflows/import-source.yml
+      - name: Commit extracted project
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Import GardenQuest source" || exit 0
+          git push
